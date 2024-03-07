@@ -1,0 +1,45 @@
+
+# This file is generated, do not edit it manually
+version: 2
+updates:
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: daily
+    open-pull-requests-limit: 99
+
+
+  - package-ecosystem: docker
+    directory: .
+    schedule:
+      interval: weekly
+
+
+  - package-ecosystem: npm
+    directory: .
+    schedule:
+      interval: daily
+
+
+  - package-ecosystem: npm
+    directory: plugins/cad
+    schedule:
+      interval: daily
+
+
+  - package-ecosystem: npm
+    directory: plugins/cad-backend
+    schedule:
+      interval: daily
+
+
+  - package-ecosystem: npm
+    directory: packages/backend
+    schedule:
+      interval: daily
+
+
+  - package-ecosystem: npm
+    directory: packages/app
+    schedule:
+      interval: daily
