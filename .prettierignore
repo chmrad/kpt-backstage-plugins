@@ -4,3 +4,4 @@ coverage
 .vscode
 **/CHANGELOG.md
 .prow.yaml
+.github
