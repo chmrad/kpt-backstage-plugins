@@ -21,6 +21,12 @@ updates:
       interval: daily
 
 
+  - package-ecosystem: docker
+    directory: hack
+    schedule:
+      interval: weekly
+
+
   - package-ecosystem: npm
     directory: plugins/cad-backend
     schedule:
