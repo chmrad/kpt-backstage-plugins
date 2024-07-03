@@ -1,0 +1,63 @@
+name: Generate Dependabot Configuration
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - '**/Dockerfile*'
+      - '**/go.mod'
+      - '**/package.json'
+  workflow_dispatch:
+
+jobs:
+  run_python_script:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+        
+      - uses: actions/create-github-app-token@v1
+        id: generate-token
+        with:
+          app-id: ${{ secrets.APP_ID }}
+          private-key: ${{ secrets.APP_PRIVATE_KEY }}
+          owner: ${{ github.repository_owner }}
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: 3.12.2
+
+      - name: Run config generation script
+        run: |
+          wget https://raw.githubusercontent.com/chmrad/prow-infra/main/tools/generate_dependabot.py -O /tmp/generate_dependabot.py
+          python /tmp/generate_dependabot.py
+          mv dependabot.yml .github/
+
+      - name: Get Closed PR number
+        uses: jwalton/gh-find-current-pr@master
+        id: find_PR
+        with:
+          state: closed
+
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@v6
+        with:
+          base: main
+          token: ${{ steps.generate-token.outputs.token }}
+          branch: update-dependabot
+          delete-branch: true
+          commit-message: Regenerating Dependabot configuration
+          author: ${{ github.actor }} <${{ github.actor_id }}+${{ github.actor }}@users.noreply.github.com>
+          title: '[Dependabot] Regenerating Dependabot configuration'
+          body: |
+            This is auto-generated Pull Request to regenerate Dependabot configuration
+            with [generate_dependabot.py][1]
+            It was triggered by this Pull Request: 
+            https://github.com/${{github.repository}}/pull/${{ steps.find_PR.outputs.pr }}
+
+            [1]: https://github.com/chmrad/prow-infra/blob/main/tools/generate_dependabot.py
