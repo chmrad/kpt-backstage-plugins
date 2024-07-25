@@ -35,8 +35,7 @@ jobs:
       - name: Run config generation script
         run: |
           wget https://raw.githubusercontent.com/nephio-project/test-infra/main/tools/dependabot/generate_dependabot.py -O /tmp/generate_dependabot.py
-          python /tmp/generate_dependabot.py
-          mv dependabot.yml .github/
+          python3 /tmp/generate_dependabot.py
 
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@c5a7806660adbe173f04e3e038b0ccdcd758773c # v6.1.0
