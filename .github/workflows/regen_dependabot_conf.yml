@@ -1,0 +1,54 @@
+name: Generate Dependabot Configuration
+
+on:
+  pull_request:
+    paths:
+      - '**/Dockerfile*'
+      - '**/go.mod'
+      - '**/package.json'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  run_python_script:
+    permissions:
+      contents: write
+      pull-requests: write
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Harden Runner
+        uses: step-security/harden-runner@0d381219ddf674d61a7572ddd19d7941e271515c # v2.9.0
+        with:
+          egress-policy: audit
+
+      - name: Checkout code
+        uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7
+
+      - name: Set up Python
+        uses: actions/setup-python@39cd14951b08e74b54015e9e001cdefcf80e669f # v5.1.1
+        with:
+          python-version: 3.12.2
+
+      - name: Run config generation script
+        run: |
+          wget https://raw.githubusercontent.com/nephio-project/test-infra/main/tools/dependabot/generate_dependabot.py -O /tmp/generate_dependabot.py
+          python /tmp/generate_dependabot.py
+          mv dependabot.yml .github/
+
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@c5a7806660adbe173f04e3e038b0ccdcd758773c # v6.1.0
+        with:
+          base: ${{ github.head_ref }}
+          commit-message: Regenerating Dependabot configuration
+          author: ${{ github.actor }} <${{ github.actor_id }}+${{ github.actor }}@users.noreply.github.com>
+          title: '[Dependabot] Regenerating Dependabot configuration'
+          body: |
+            This is auto-generated Pull Request to regenerate Dependabot configuration
+            with [generate_dependabot.py][1]
+            It was triggered by this Pull Request: 
+            https://github.com/${{ github.repository }}/pull/${{ github.event.pull_request.number }}
+
+            [1]: https://github.com/nephio-project/test-infra/tools/dependabot
