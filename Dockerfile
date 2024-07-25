@@ -67,6 +67,7 @@ RUN tar xzf bundle.tar.gz && rm bundle.tar.gz
 
 # Stage 4 - Build the actual Backstage image that can be deployed to an environment
 FROM base-backstage-app as backstage-app
+RUN apt-get -y upgrade
 
 # Copy any other files that we need at runtime
 COPY app-config.yaml app-config.kubernetes.yaml ./
