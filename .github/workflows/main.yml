@@ -1,0 +1,18 @@
+name: Generate Dependabot Report
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    permissions:
+      pull-requests: read
+    runs-on: ubuntu-latest
+    steps:
+    - name: Fetch Dependabot metadata
+      id: dependabot-metadata
+      uses: dependabot/fetch-metadata@v2
+      with:
+        alert-lookup: true
+        compat-lookup: true
+        github-token: "${{ secrets.GITHUB_TOKEN }}"
