@@ -1,0 +1,15 @@
+name: Generate Dependabot Report
+
+on:
+  workflow_dispatch:
+
+jobs:
+  generate_report:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Setup Go environment
+      uses: actions/setup-go@v5.0.2
+    - name: Install Dependabot
+      run: go install github.com/dependabot/cli/cmd/dependabot@latest
+    - name: Run Dependabot
+      run: dependabot update npm_and_yarn chmrad/kpt-backstage-plugins
