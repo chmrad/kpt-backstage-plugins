@@ -1,0 +1,20 @@
+name: Generate Token
+
+on:
+  pull_request:
+    paths:
+      - '**/Dockerfile*'
+      - '**/go.mod'
+      - '**/package.json'
+  workflow_dispatch:
+
+jobs:
+  job:
+    runs-on: ubuntu-latest
+    steps:
+      - id: create_token
+        uses: actions/create-github-app-token@v1
+        with:
+          app-id: ${{ secrets.APP_ID }}
+          private-key: ${{ secrets.APP_PRIVATE_KEY }}
+      - run: "echo 'The created token is masked: ${{ steps.create_token.outputs.token }}'"
